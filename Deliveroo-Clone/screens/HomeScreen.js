@@ -48,7 +48,8 @@ const HomeScreen = () => {
         <AdjustmentsVerticalIcon size={35} color='#00CCBB'/>
       </View>
          {/* Body */}
-         <ScrollView>
+         <ScrollView className=" bg-gray-100">
+       
           {/* categories */}
          <Categories/>
           {/* featured row */}
