@@ -1,9 +1,28 @@
 import { View, Text, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ArrowRightIcon } from "react-native-heroicons/outline"
 import RestaurantCard from './RestaurantCard'
+import sanityClient from "../sanity"
 
 const FeaturedRow = ({id, title, description}) => {
+  const [restaurants, setRestaurants] = useState([])
+ useEffect(()=> {
+  sanityClient.fetch(
+    `*[_type == 'featured' && _id == '${id}']{
+      ...,
+      restaurants[]->{
+        ...,
+        dishes[]->,
+        type->{
+          name
+        }
+      }
+    }`
+  ).then(data => {
+    setRestaurants(data[0].restaurants)
+  });
+ }, [])
+ console.log(restaurants)
   return (
     <View>
       <View className="mt-4 flex-row items-center justify-between px-4">
@@ -21,19 +40,25 @@ const FeaturedRow = ({id, title, description}) => {
        showsHorizontalScrollIndicator={false}
        className="pt-4"
        >
+        
         {/* RestaurantCard */}
-        <RestaurantCard 
-        id={123}
-        imgUrl="https://links.papareact.com/gn7"
-        title="Yo! Sushi"
-        rating={4.5}
-        genre='japanese'
-        address='123 main street'
-        short_description='short description'
-        dishes={[]}
-        long={20}
-        lat={0}
-        />
+        {restaurants?.map(restaurant => (
+          <RestaurantCard 
+          key={restaurant._id}
+          id={restaurant._id}
+          imgUrl={restaurant.image}
+          title={restaurant.name}
+          rating={restaurant.rating}
+          genre={restaurant.type?.name}
+          address={restaurant.address}
+          short_description={restaurant.short_description}
+          dishes={restaurant.dishes}
+          long={restaurant.long}
+          lat={restaurant.lat}
+          />
+        ))}
+        
+        
        </ScrollView>
     </View>
   )

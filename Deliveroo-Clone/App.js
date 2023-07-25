@@ -4,9 +4,9 @@ import { TailwindProvider } from 'tailwindcss-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
-
+import { setupURLPolyfill } from 'react-native-url-polyfill'
 const Stack = createNativeStackNavigator();
-
+setupURLPolyfill()
 export default function App() {
   return (
     <NavigationContainer>
